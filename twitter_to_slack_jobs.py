@@ -153,63 +153,22 @@ class TwitterJobBot:
     def post_to_slack(self, tweet: Dict) -> bool:
         """
         Post a job to Slack
-        
+
         Args:
             tweet: Tweet dictionary
-        
+
         Returns:
             True if successful, False otherwise
         """
-        # Format the Slack message
+        # Format the Slack message - simple text with Twitter URL
         message = {
             "blocks": [
                 {
-                    "type": "header",
-                    "text": {
-                        "type": "plain_text",
-                        "text": "🎯 New Job Posting Found"
-                    }
-                },
-                {
-                    "type": "section",
-                    "fields": [
-                        {
-                            "type": "mrkdwn",
-                            "text": f"*Posted by:*\n{tweet['author_name']} (@{tweet['author_username']})"
-                        },
-                        {
-                            "type": "mrkdwn",
-                            "text": f"*Date:*\n{tweet['created_at'].strftime('%Y-%m-%d %H:%M UTC')}"
-                        }
-                    ]
-                },
-                {
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": f"*Job Description:*\n{tweet['text'][:500]}{'...' if len(tweet['text']) > 500 else ''}"
+                        "text": f"{tweet['text']}\n\n{tweet['url']}"
                     }
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": f"💙 {tweet['likes']} | 🔁 {tweet['retweets']}"
-                    }
-                },
-                {
-                    "type": "actions",
-                    "elements": [
-                        {
-                            "type": "button",
-                            "text": {
-                                "type": "plain_text",
-                                "text": "View on Twitter"
-                            },
-                            "url": tweet['url'],
-                            "style": "primary"
-                        }
-                    ]
                 },
                 {
                     "type": "divider"
