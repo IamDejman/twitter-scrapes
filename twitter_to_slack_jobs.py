@@ -113,31 +113,41 @@ class TwitterJobBot:
     def filter_relevant_jobs(self, tweets: List[Dict], filters: Dict) -> List[Dict]:
         """
         Filter tweets to only include relevant job postings
-        
+
         Args:
             tweets: List of tweet dictionaries
             filters: Dictionary with 'include' and 'exclude' keyword lists
-        
+
         Returns:
             Filtered list of tweets
         """
         relevant = []
-        
+
         include_keywords = [k.lower() for k in filters.get('include', [])]
         exclude_keywords = [k.lower() for k in filters.get('exclude', [])]
-        
+
+        # Nigeria-specific keywords that MUST be present
+        nigeria_keywords = [
+            'nigeria', 'nigerian', 'lagos', 'abuja', 'port harcourt',
+            'ibadan', 'kano', 'benin city', 'enugu', 'kaduna'
+        ]
+
         for tweet in tweets:
             text_lower = tweet['text'].lower()
-            
-            # Check if tweet contains any include keywords
-            has_include = any(keyword in text_lower for keyword in include_keywords) if include_keywords else True
-            
+
+            # MUST contain at least one Nigeria-related keyword
+            has_nigeria = any(keyword in text_lower for keyword in nigeria_keywords)
+
             # Check if tweet contains any exclude keywords
             has_exclude = any(keyword in text_lower for keyword in exclude_keywords)
-            
-            if has_include and not has_exclude:
+
+            # Check if tweet contains any include keywords (optional for additional filtering)
+            has_include = any(keyword in text_lower for keyword in include_keywords) if include_keywords else True
+
+            # Only include if mentions Nigeria AND doesn't have excluded terms
+            if has_nigeria and not has_exclude and has_include:
                 relevant.append(tweet)
-        
+
         return relevant
     
     def post_to_slack(self, tweet: Dict) -> bool:
@@ -293,8 +303,13 @@ def main():
     ]
 
     # Configure filters - comprehensive list covering all pathways
+    # MUST include Nigeria-related terms to ensure only Nigerian jobs
     filter_config = {
         'include': [
+            # REQUIRED: Must mention Nigeria or Nigerian cities
+            'nigeria', 'nigerian', 'lagos', 'abuja', 'port harcourt',
+            'ibadan', 'kano', 'benin city', 'enugu', 'kaduna',
+
             # Tech & Digital
             'AI', 'ML', 'machine learning', 'artificial intelligence',
             'animation', 'animator', '3D artist', 'motion graphics',
@@ -345,10 +360,22 @@ def main():
 
             # General terms
             'hiring', 'job opening', 'vacancy', 'we are hiring',
-            'nigeria', 'lagos', 'abuja', 'port harcourt',
             'remote', 'hybrid', 'full-time', 'permanent'
         ],
         'exclude': [
+            # Countries to exclude
+            'india', 'indian', 'delhi', 'mumbai', 'bangalore', 'hyderabad',
+            'pakistan', 'pakistani', 'karachi', 'lahore', 'islamabad',
+            'uk', 'united kingdom', 'london', 'manchester', 'birmingham',
+            'usa', 'united states', 'america', 'new york', 'california',
+            'canada', 'canadian', 'toronto', 'vancouver',
+            'south africa', 'johannesburg', 'cape town',
+            'kenya', 'nairobi', 'mombasa',
+            'ghana', 'accra', 'kumasi',
+            'egypt', 'cairo',
+            'uae', 'dubai', 'abu dhabi',
+
+            # Job types to exclude
             'internship',  # Remove if you want internships
             'volunteer',
             'unpaid',
