@@ -36,6 +36,11 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add posted_jobs.json
-        git diff --quiet && git diff --staged --quiet || git commit -m "Update posted jobs [skip ci]"
-        git push
+        # Only add and commit if posted_jobs.json exists
+        if [ -f posted_jobs.json ]; then
+          git add posted_jobs.json
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update posted jobs [skip ci]"
+          git push
+        else
+          echo "No posted_jobs.json file to commit"
+        fi

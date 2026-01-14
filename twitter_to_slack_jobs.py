@@ -273,60 +273,23 @@ def main():
     bot = TwitterJobBot()
 
     # Configure search keywords (hashtags and terms) covering all career pathways
+    # Note: Twitter API has a 512 character limit for search queries
+    # Using most popular and broad hashtags to capture maximum jobs
     search_keywords = [
-        # General job hashtags
         '#NigeriaJobs',
         '#TechJobsNigeria',
         '#LagosJobs',
-        '#AbujaJobs',
         '#RemoteJobs',
         '#hiring',
-        '#WeAreHiring',
         '#JobOpening',
-
-        # Tech & Digital pathways
-        '#AIJobs',
-        '#MachineLearning',
-        '#DataScience',
-        '#CloudComputing',
-        '#CyberSecurity',
-        '#DevOps',
-        '#SoftwareDeveloper',
-        '#Frontend',
-        '#Backend',
-        '#FullStack',
-        '#GameDev',
-        '#Animation',
-        '#UIUX',
-        '#ProductManager',
-        '#QA',
-        '#Blockchain',
-        '#Web3',
-        '#IoT',
-        '#Robotics',
-
-        # Business & Finance pathways
         '#FintechJobs',
-        '#BankingJobs',
-        '#AccountingJobs',
+        '#DataScience',
+        '#DevOps',
+        '#ProductManager',
+        '#UIUX',
         '#SalesJobs',
         '#Marketing',
-        '#CustomerService',
-
-        # Industry-specific pathways
-        '#HealthcareJobs',
-        '#EducationJobs',
-        '#AgricultureJobs',
-        '#RetailJobs',
-        '#LogisticsJobs',
-        '#ConstructionJobs',
-        '#ManufacturingJobs',
-        '#Hospitality',
-        '#Tourism',
-        '#RealEstate',
-        '#EnergyJobs',
-        '#Sustainability',
-        '#NGOJobs'
+        '#HealthcareJobs'
     ]
 
     # Configure filters - comprehensive list covering all pathways
