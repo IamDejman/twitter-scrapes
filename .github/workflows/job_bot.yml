@@ -2,8 +2,9 @@ name: Twitter Job Bot
 
 on:
   schedule:
-    # Run every 2 hours
-    - cron: '0 */2 * * *'
+    # Run 3 times per day at 8am, 12pm, and 3pm WAT (7am, 11am, 2pm UTC)
+    # This equals 90 runs per month, staying within API limits
+    - cron: '0 7,11,14 * * *'
   workflow_dispatch:  # Allow manual triggering
 
 jobs:
