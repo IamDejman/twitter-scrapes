@@ -2,8 +2,8 @@ name: Twitter Job Bot
 
 on:
   schedule:
-    # Run every 6 hours (adjust as needed)
-    - cron: '0 */6 * * *'
+    # Run every minute
+    - cron: '* * * * *'
   workflow_dispatch:  # Allow manual triggering
 
 jobs:
