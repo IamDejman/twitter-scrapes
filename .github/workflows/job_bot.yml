@@ -1,0 +1,41 @@
+name: Twitter Job Bot
+
+on:
+  schedule:
+    # Run every 6 hours (adjust as needed)
+    - cron: '0 */6 * * *'
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  fetch-and-post-jobs:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+    
+    - name: Run job bot
+      env:
+        TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+        TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+        TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      run: |
+        python twitter_to_slack_jobs.py
+    
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add posted_jobs.json
+        git diff --quiet && git diff --staged --quiet || git commit -m "Update posted jobs [skip ci]"
+        git push
